@@ -2,6 +2,7 @@ const { static } = require('express');
 const express = require('express');
 const cors = require('cors');
 var fs = require("fs");
+const { send } = require('process');
 
 const app = express();
 const print = function (args) {
@@ -52,7 +53,17 @@ async function getVoters() {
 }
 
 app.post('/send_vote', async function (req, res) {
+
+    function sendError(text) {
+        res.status(400);
+        res.send(text);
+    }
+    
     const voters = await getVoters();
+    if (voters == null) {
+        sendError("Internal");
+        return;
+    }
     console.log(voters);
     const perm = [
         [],
@@ -114,11 +125,6 @@ app.post('/send_vote', async function (req, res) {
     var ev3 = +obj.ev3;
     var wedo = +obj.wedo;
     var third = +obj.third;
-
-    function sendError(text) {
-        res.status(400);
-        res.send(text);
-    }
 
     var member1 = +member.split('-', 1)[0];
 
