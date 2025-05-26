@@ -59,7 +59,7 @@ async function getPerms() {
                 perms.push([]);
             else {
                 element = element.split(':')[1];
-                perms.push(element.split(':')[1].split(',').map((elem) => +elem));
+                perms.push(element.split(',').map((elem) => +elem));
             }
         }
         return perms;
@@ -76,11 +76,11 @@ app.post('/send_vote', async function (req, res) {
     }
 
     const voters = await getVoters();
-    if (voters == null) {
-        sendError("Internal");
+    const perm = await getPerms();
+    if (voters == null || perms == null) {
+        sendError("Внутрянняя ошибка");
         return;
     }
-    const perm = await getPerms();
     var obj = req.body;
     var member = obj.member;
     var ev3 = +obj.ev3;
