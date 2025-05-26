@@ -22,17 +22,15 @@ app.use(function (request, response, next) {
 app.get('/', function (req, res) {
     res.sendFile(__dirname + "/static/index.html");
 });
-app.get('/clear', function (req, res) {
-    fs.writeFile('votes.csv', "", function (err) {
-        if (err) {
+app.get('/clear', async function (req, res) {
+    try {
+        await fs.writeFile('votes.csv', "");
+        res.status = 200;
+        res.send("OK");
+    } catch (err) {
             res.status = 500;
             res.send(err);
-        }
-        else {
-            res.status = 200;
-            res.send("OK");
-        }
-    });
+    }
 });
 
 async function getVoters() {
