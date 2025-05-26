@@ -178,7 +178,7 @@ app.post('/send_vote', async function (req, res) {
             }
         } catch (error) {
             console.log(error);
-            res.status.status(500);
+            res.status(500);
             res.send("Внутренняя ошибка сервера. Обратитесь к администратору!");
         }
 
