@@ -1,6 +1,7 @@
 const { static } = require('express');
 const express = require('express');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 var fs = require("fs").promises;
 const { send } = require('process');
 
