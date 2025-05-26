@@ -172,7 +172,7 @@ app.post('/send_vote', async function (req, res) {
                 data += member + ";" + ev3 + ";" + wedo + ";" + third + "\n";
 
                 fs.writeFile('votes.csv', data);
-                
+
                 res.status(200);
                 res.send("OK");
             }
@@ -224,7 +224,7 @@ app.get('/table', async function (request, response) {
     }
     catch (error) {
         console.log(error);
-        response.status.status(500);
+        response.status(500);
         response.send("Внутренняя ошибка сервера. Обратитесь к администратору!");
     }
 })
