@@ -76,8 +76,8 @@ app.post('/send_vote', async function (req, res) {
     }
 
     const voters = await getVoters();
-    const perm = await getPerms();
-    if (voters == null || perms == null) {
+    const permissions = await getPerms();
+    if (voters == null || permissions == null) {
         sendError("Внутрянняя ошибка");
         return;
     }
@@ -111,7 +111,7 @@ app.post('/send_vote', async function (req, res) {
     else if (third == ev3 || third == wedo) {
         sendError("Вы не можете голосовать дважды за одну команду!");
     }
-    else if (perm[member1].indexOf(ev3) + perm[member1].indexOf(third) + perm[member1].indexOf(wedo) != -3) {
+    else if (permissions[member1].indexOf(ev3) + permissions[member1].indexOf(third) + permissions[member1].indexOf(wedo) != -3) {
         sendError("Вам запрещено голосовать за эту команду!");
     }
     else {
