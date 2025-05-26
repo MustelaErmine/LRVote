@@ -32,6 +32,14 @@ app.get('/clear', async function (req, res) {
         res.send(err);
     }
 });
+app.get('/voters', async function (req, res) {
+    res.status(200);
+    res.send(JSON.stringify(await getVoters()));
+});
+app.get('/permissions', async function (req, res) {
+    res.status(200);
+    res.send(JSON.stringify(await getPermissions()));
+});
 
 async function getVoters() {
     try {
@@ -49,7 +57,7 @@ async function getVoters() {
         return null;
     }
 }
-async function getPerms() {
+async function getPermissions() {
     try {
         const rows = (await fs.readFile('voters.txt')).toString().split('\n');
         var perms = [];
@@ -76,7 +84,7 @@ app.post('/send_vote', async function (req, res) {
     }
 
     const voters = await getVoters();
-    const permissions = await getPerms();
+    const permissions = await getPermissions();
     if (voters == null || permissions == null) {
         sendError("Внутрянняя ошибка");
         return;
