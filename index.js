@@ -1,5 +1,6 @@
 const { static } = require('express');
 const express = require('express');
+const cors = require('cors');
 var fs = require("fs");
 
 const app = express();
@@ -10,6 +11,7 @@ const print = function (args) {
 
 app.use('/static', express.static(__dirname + '/static'));
 app.use(express.json());
+app.use(cors());
 
 app.use(function (request, response, next) {
     print(request.ip + ' ' + request.method + ' ' + request.path);

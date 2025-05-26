@@ -13,8 +13,8 @@
 			setTimeout(1000, ()=>{document.getElementById('error_label').innerText = "";});*/
 			alert(text);
 		}
-		function displaySuccess(text) {/*
-				displayError("");
+		function displaySuccess(text) {
+			/*  displayError("");
 				document.getElementById('success_label').innerText = text;
 				setTimeout(1000, ()=>{document.getElementById('success_label').innerText = "";});*/
 			alert(text);
@@ -118,7 +118,7 @@
 				displayError("Вам запрещено голосовать за эту команду!");
 			}
 			else {
-				var response = await fetch("/send_vote", {
+				var response = await fetch("ermine-scout.ru:2000/send_vote", {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json;charset=utf-8',
