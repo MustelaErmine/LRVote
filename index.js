@@ -222,6 +222,6 @@ app.get('/table', function (request, response) {
     });
 })
 
-app.listen(port = 80, callback = function () {
+app.listen(port = 2000, callback = function () {
     print('Server started');
 });
