@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Кубок ЛР - 2024</title>
+	<script type="text/javascript">
+		const wedo_teams = ['1', '2', '3'], ev3_teams = ['4', '5', '6'], other_teams = ['7', '8', '9'];
+		const all_teams = wedo_teams.concat(ev3_teams).concat(other_teams);
+		function displayError(text) {
+			/*document.getElementById('error_label').innerText = text;
+			setTimeout(1000, ()=>{document.getElementById('error_label').innerText = "";});*/
+			alert(text);
+		}
+		function displaySuccess(text) {/*
+				displayError("");
+				document.getElementById('success_label').innerText = text;
+				setTimeout(1000, ()=>{document.getElementById('success_label').innerText = "";});*/
+			alert(text);
+		}
+		function clearAllFormInputs() {
+			let form = document.getElementById('form');
+			let inputs = form.getElementsByTagName('input');
+			for (let input of inputs)
+				input.value = '';
+		}
+
+		async function sendVote() {
+			var member = document.getElementById('member').value;
+			var ev3 = +document.getElementById('ev3').value;
+			var wedo = +document.getElementById('wedo').value;
+			var third = +document.getElementById('third').value;
+			const voters = ['1-1', '1-2', '2-1', '2-2', '3-1', '4-1', '4-2', '5-1', '6-1', '6-2', '6-3',
+				'7-1', '7-2', '8-1', '8-2', '9-2', '10-1', '10-2', '11-1', '12-1', '12-2', '13-1', '13-2',
+				'14-1', '15-1', '15-2', '16-1', '17-1', '18-1', '19-1', '20-1', '21-1', '21-2', '22-1', '22-2',
+				'23-1', '23-2', '24-1', '24-2', '25-1', '25-2', '26-1', '26-2', '27-1', '27-2', '28-1', '28-2',
+				'29-1', '29-2', '30-1', '30-2', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45'];
+			const perm = [
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[15],
+				[6, 14],
+				[16],
+				[7, 1],
+				[1, 2, 21],
+				[12, 25, 28],
+				[8, 9, 23],
+				[13],
+				[11, 17, 18, 19],
+				[3, 4, 5, 22, 27],
+				[20, 24, 26, 30],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+				[],
+			];
+
+			var member1 = +member.split('-', 1)[0];
+			if (isNaN(ev3) || isNaN(wedo) || isNaN(third) ||
+				member == '' || ev3 == '' || wedo == '' || third == '') {
+				displayError("Неверный формат ввода");
+			}
+			else if (ev3 > 30 || ev3 < 20) {
+				displayError("Команда 1 не из категории EV3!");
+			}
+			else if (wedo > 19 || wedo < 1) {
+				displayError("Команда 2 не из категории WeDo!");
+			}
+			else if (third > 30 || third < 1) {
+				displayError("Команда 3 не принадлежит ни одной из категорий!");
+			}
+			else if (voters.indexOf(member) == -1) {
+				displayError("Ваша команда не принадлежит ни одной из категорий!");
+			}
+			else if (member1 == ev3 || member1 == wedo || member1 == third) {
+				displayError("Вы не можете голосовать за свою команду!");
+			}
+			else if (third == ev3 || third == wedo) {
+				displayError("Вы не можете голосовать дважды за одну команду!");
+			}
+			else if (perm[member1 - 1].indexOf(ev3) + perm[member1 - 1].indexOf(third) + perm[member1 - 1].indexOf(wedo) != -3) {
+				displayError("Вам запрещено голосовать за эту команду!");
+			}
+			else {
+				var response = await fetch("/send_vote", {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json;charset=utf-8',
+					},
+					body: JSON.stringify({ ev3: ev3, member: member, third: third, wedo: wedo })
+				});
+				if (response.status == 200) {
+					clearAllFormInputs();
+					displaySuccess("Голос успешно отправлен");
+				} else {
+					displayError(response.status + " Ошибка: " + await response.text());
+				}
+			}
+		}
+	</script>
+</head>
+
+<body>
+	<center>
+		<div id="form">
+			<img src="/static/logo.jpg" style="width:300px;max-width: 80%;"><br>
+
+			<div class="input_row">
+				<label>Номер вашей команды:</label>
+				<input type="text" id="member">
+			</div><br>
+			<div class="input_row">
+				<label>Команда из EV3:</label>
+				<input type="text" id="ev3">
+			</div><br>
+			<div class="input_row">
+				<label>Команда из WeDo:</label>
+				<input type="text" id="wedo">
+			</div><br>
+			<div class="input_row">
+				<label>Третья команда:</label>
+				<input type="text" id="third">
+			</div><br>
+			<center><button onclick="sendVote()">Отправить</button></center><br>
+			<p id="error_label"></p>
+			<p id="success_label"></p>
+		</div>
+		<style>
+			.input_row {
+				margin-bottom: 10px;
+			}
+
+			input {
+				width: 5em;
+				font-size: 16pt;
+				border-radius: 10px;
+				text-align: center;
+				border-width: 2px;
+				border-color: #555;
+			}
+
+			.input_row {
+				max-width: 90%;
+			}
+
+			label {
+				font-family: Consolas;
+				font-size: 16pt;
+			}
+
+			#form {
+				background-color: white;
+				width: 90%;
+				border-radius: 40px;
+				border-style: solid;
+				border-width: 5px;
+				border-color: #333;
+			}
+
+			html {
+				background-color: #2fabe1;
+			}
+
+			button {
+				font-size: 20pt;
+				font-family: cursive;
+				padding-left: 20px;
+				padding-right: 20px;
+				padding-top: 5px;
+				padding-bottom: 5px;
+
+				border-radius: 20px;
+				border-color: #a5c313;
+				background-color: white;
+				border-width: 5px;
+				border-style: solid;
+			}
+		</style>
+	</center>
+</body>
+
+</html>
