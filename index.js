@@ -11,7 +11,7 @@ const print = function (args) {
 }
 
 app.use('/static', express.static(__dirname + '/static'));
-app.use(express.json());
+//app.use(express.json());
 app.use(cors());
 
 app.use(function (request, response, next) {
@@ -93,7 +93,7 @@ app.post('/send_vote', async function (req, res) {
         sendError("Внутрянняя ошибка");
         return;
     }
-    var obj = req.body;
+    var obj = JSON.parse(req.body);
     var member = obj.member;
     var ev3 = +obj.ev3;
     var wedo = +obj.wedo;
