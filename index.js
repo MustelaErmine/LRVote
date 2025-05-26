@@ -13,7 +13,7 @@ const print = function (args) {
 
 app.use('/static', express.static(__dirname + '/static'));
 //app.use(express.json());
-app.use(express.bodyParser());
+app.use(bodyParser.text());
 app.use(cors());
 
 app.use(function (request, response, next) {
