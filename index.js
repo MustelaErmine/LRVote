@@ -34,13 +34,28 @@ app.get('/clear', function (req, res) {
     });
 });
 
-app.post('/send_vote', function (req, res) {
-    const voters = ['1-1','1-2','2-1','2-2','3-1','4-1','4-2','5-1','6-1','6-2','6-3',
-                     '7-1','7-2','8-1','8-2','9-2','10-1','10-2','11-1','12-1','12-2','13-1','13-2',
-                     '14-1','15-1','15-2','16-1','17-1','18-1','19-1','20-1','21-1','21-2','22-1','22-2',
-                     '23-1','23-2','24-1','24-2','25-1','25-2','26-1','26-2','27-1','27-2','28-1','28-2',
-                     '29-1','29-2','30-1','30-2','31','32','33','34','35','36','37','38','39','40','41','42','43','44','45'];
+async function getVoters() {
+    try {
+        const rows = (await fs.readFile('voters.txt')).toString().split('\n');
+        var voters = [];
+        for (let i = 0; i < rows.length; i++) {
+            const element = array[i];
+            if (element.indexOf(':') != -1)
+                element = element.split(':')[0];
+            voters.push(element);
+        }
+        return voters;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+app.post('/send_vote', async function (req, res) {
+    const voters = await getVoters();
+    console.log(voters);
     const perm = [
+        [],
         [],
         [],
         [],
@@ -129,12 +144,14 @@ app.post('/send_vote', function (req, res) {
     else if (third == ev3 || third == wedo) {
         sendError("Вы не можете голосовать дважды за одну команду!");
     }
-    else if (perm[member1 - 1].indexOf(ev3) + perm[member1 - 1].indexOf(third) + perm[member1 - 1].indexOf(wedo) != -3) {
+    else if (perm[member1].indexOf(ev3) + perm[member1].indexOf(third) + perm[member1].indexOf(wedo) != -3) {
         sendError("Вам запрещено голосовать за эту команду!");
     }
     else {
 
         fs.readFile("votes.csv", function (err, data) {
+            if (data == undefined)
+                data = "";
             data = data.toString();
             if (err || data == null) {
                 console.log(err);
