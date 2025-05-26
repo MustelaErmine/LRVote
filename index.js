@@ -155,27 +155,21 @@ app.post('/send_vote', async function (req, res) {
             if (data == undefined)
                 data = "";
             data = data.toString();
-            if (err || data == null) {
-                console.log(err);
-                res.status.status(500);
-                res.send("Внутренняя ошибка сервера. Обратитесь к администратору!");
-            }
-            else {
-                splitted = data.split("\n");
-                error = false;
-                for (const row in splitted) {
-                    if (splitted[row].split(";", 1) == member) {
-                        sendError("Вы уже голосовали.");
-                        return;
-                    }
+            splitted = data.split("\n");
+            error = false;
+            for (const row in splitted) {
+                if (splitted[row].split(";", 1) == member) {
+                    sendError("Вы уже голосовали.");
+                    return;
                 }
-                data += member + ";" + ev3 + ";" + wedo + ";" + third + "\n";
-
-                fs.writeFile('votes.csv', data);
-
-                res.status(200);
-                res.send("OK");
             }
+            data += member + ";" + ev3 + ";" + wedo + ";" + third + "\n";
+
+            fs.writeFile('votes.csv', data);
+
+            res.status(200);
+            res.send("OK");
+
         } catch (error) {
             console.log(error);
             res.status(500);
