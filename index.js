@@ -28,8 +28,8 @@ app.get('/clear', async function (req, res) {
         res.status = 200;
         res.send("OK");
     } catch (err) {
-            res.status = 500;
-            res.send(err);
+        res.status = 500;
+        res.send(err);
     }
 });
 
@@ -51,7 +51,6 @@ async function getVoters() {
 }
 
 app.post('/send_vote', async function (req, res) {
-
     function sendError(text) {
         res.status(400);
         res.send(text);
@@ -62,7 +61,6 @@ app.post('/send_vote', async function (req, res) {
         sendError("Internal");
         return;
     }
-    console.log(voters);
     const perm = [
         [],
         [],
@@ -96,16 +94,16 @@ app.post('/send_vote', async function (req, res) {
         [],
         [],
         [15],
-        [6,14],
+        [6, 14],
         [16],
-        [7,1],
-        [1,2,21],
-        [12,25,28],
-        [8,9,23],
+        [7, 1],
+        [1, 2, 21],
+        [12, 25, 28],
+        [8, 9, 23],
         [13],
-        [11,17,18,19],
-        [3,4,5,22,27],
-        [20,24,26,30],
+        [11, 17, 18, 19],
+        [3, 4, 5, 22, 27],
+        [20, 24, 26, 30],
         [],
         [],
         [],
@@ -152,8 +150,8 @@ app.post('/send_vote', async function (req, res) {
         sendError("Вам запрещено голосовать за эту команду!");
     }
     else {
-
-        fs.readFile("votes.csv", function (err, data) {
+        try {
+            var data = await fs.readFile("votes.csv");
             if (data == undefined)
                 data = "";
             data = data.toString();
@@ -168,81 +166,67 @@ app.post('/send_vote', async function (req, res) {
                 for (const row in splitted) {
                     if (splitted[row].split(";", 1) == member) {
                         sendError("Вы уже голосовали.");
-                        error = true;
+                        return;
                     }
                 }
-                if (!error) {
-                    data += member + ";" + ev3 + ";" + wedo + ";" + third + "\n";
+                data += member + ";" + ev3 + ";" + wedo + ";" + third + "\n";
 
-                    fs.writeFile('votes.csv', data, function (err) {
-                        if (err) {
-                            console.log("err" + err);
-                            res.status(500);
-                            res.send("Внутренняя ошибка сервера. Обратитесь к администратору!");
-                        }
-                        else {
-                            res.status(200);
-                            res.send("OK");
-                        };
-                    });
-                }
+                fs.writeFile('votes.csv', data);
+                
+                res.status(200);
+                res.send("OK");
             }
-        });
+        } catch (error) {
+            console.log(error);
+            res.status.status(500);
+            res.send("Внутренняя ошибка сервера. Обратитесь к администратору!");
+        }
+
     }
 });
 
-app.get('/table', function (request, response) {
-    fs.readFile("votes.csv", function (err, data) {
+app.get('/table', async function (request, response) {
+    try {
+        var data = await fs.readFile("votes.csv");
         data = data.toString();
-        if (err || data == null) {
-            console.log(err);
-            response.status.status(500);
-            response.send("Внутренняя ошибка сервера. Обратитесь к администратору!");
+        splitted = data.split("\n");
+        data = {};
+        data2 = {};
+        error = false;
+        function increase(team, team2) {
+            if (!data[team]) {
+                data[team] = 1;
+                data2[team] = team2.toString();
+            }
+            else {
+                data[team] += 1;
+                data2[team] += ',' + team2.toString();
+            }
         }
-        else {
-            splitted = data.split("\n");
-            data = {};
-            data2 = {};
-            error = false;
-            function increase(team, team2) {
-                if (!data[team]) {
-                    data[team] = 1;
-                    data2[team] = team2.toString();
-                }
-                else {
-                    data[team] += 1;
-                    data2[team] += ',' + team2.toString();
-                }
+        for (const row in splitted) {
+            if (splitted[row]) {
+                splitted_row = splitted[row].split(";");
+                increase(splitted_row[1], splitted_row[0]);
+                increase(splitted_row[2], splitted_row[0]);
+                increase(splitted_row[3], splitted_row[0]);
             }
-            for (const row in splitted) {
-                if (splitted[row]) {
-                    splitted_row = splitted[row].split(";");
-                    increase(splitted_row[1], splitted_row[0]);
-                    increase(splitted_row[2], splitted_row[0]);
-                    increase(splitted_row[3], splitted_row[0]);
-                }
-            }
-
-            file = 'team;votes;who_voted\n';
-
-            for (const team in data) {
-                file += team + ';' + data[team] + ';' + data2[team] + '\n';
-            }
-
-            fs.writeFile('results.csv', file, function (err) {
-                if (err) {
-                    console.log("err" + err);
-                    response.status(500);
-                    response.send("Внутренняя ошибка сервера. Обратитесь к администратору!");
-                }
-                else {
-                    response.status(200);
-                    response.sendFile(__dirname + "/results.csv");
-                };
-            });
-
         }
-    });
+
+        file = 'team;votes;who_voted\n';
+
+        for (const team in data) {
+            file += team + ';' + data[team] + ';' + data2[team] + '\n';
+        }
+
+        await fs.writeFile('results.csv', file);
+        response.status(200);
+        response.sendFile(__dirname + "/results.csv");
+    }
+    catch (error) {
+        console.log(error);
+        response.status.status(500);
+        response.send("Внутренняя ошибка сервера. Обратитесь к администратору!");
+    }
 })
 
 app.listen(port = 2000, callback = function () {
