@@ -41,9 +41,28 @@ async function getVoters() {
             var element = rows[i];
             if (element.indexOf(':') != -1)
                 element = element.split(':')[0];
-            voters.push(element);
+            voters.push(+element);
         }
         return voters;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+async function getPerms() {
+    try {
+        const rows = (await fs.readFile('voters.txt')).toString().split('\n');
+        var perms = [];
+        for (let i = 0; i < rows.length; i++) {
+            var element = rows[i].replace(' ', '');
+            if (element.indexOf(':') == -1)
+                perms.push([]);
+            else {
+                element = element.split(':')[1];
+                perms.push(element.split(':')[1].split(',').map((elem) => +elem));
+            }
+        }
+        return perms;
     } catch (error) {
         console.error(error);
         return null;
@@ -61,61 +80,7 @@ app.post('/send_vote', async function (req, res) {
         sendError("Internal");
         return;
     }
-    const perm = [
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [15],
-        [6, 14],
-        [16],
-        [7, 1],
-        [1, 2, 21],
-        [12, 25, 28],
-        [8, 9, 23],
-        [13],
-        [11, 17, 18, 19],
-        [3, 4, 5, 22, 27],
-        [20, 24, 26, 30],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-    ];
+    const perm = await getPerms();
     var obj = req.body;
     var member = obj.member;
     var ev3 = +obj.ev3;
