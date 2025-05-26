@@ -1,7 +1,7 @@
 const { static } = require('express');
 const express = require('express');
 const cors = require('cors');
-var fs = require("fs");
+var fs = require("fs").promises;
 const { send } = require('process');
 
 const app = express();
@@ -58,7 +58,7 @@ app.post('/send_vote', async function (req, res) {
         res.status(400);
         res.send(text);
     }
-    
+
     const voters = await getVoters();
     if (voters == null) {
         sendError("Internal");
