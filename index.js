@@ -40,7 +40,7 @@ async function getVoters() {
         const rows = (await fs.readFile('voters.txt')).toString().split('\n');
         var voters = [];
         for (let i = 0; i < rows.length; i++) {
-            const element = array[i];
+            const element = rows[i];
             if (element.indexOf(':') != -1)
                 element = element.split(':')[0];
             voters.push(element);
