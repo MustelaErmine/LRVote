@@ -37,7 +37,7 @@ app.get('/voters', async function (req, res) {
     res.send(JSON.stringify(await getVoters()));
 });
 app.post('/voters', async function (req, res) {
-    await fs.writeFile('voters.txt', req.body);
+    await fs.writeFile('voters.txt', req.body.toString());
     res.sendStatus(200);
 });
 app.get('/permissions', async function (req, res) {
