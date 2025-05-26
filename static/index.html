@@ -118,7 +118,7 @@
 				displayError("Вам запрещено голосовать за эту команду!");
 			}
 			else {
-				var response = await fetch("ermine-scout.ru:2000/send_vote", {
+				var response = await fetch("http://ermine-scout.ru:2000/send_vote", {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json;charset=utf-8',
