@@ -41,7 +41,7 @@ async function getVoters() {
             var element = rows[i];
             if (element.indexOf(':') != -1)
                 element = element.split(':')[0];
-            voters.push(+element);
+            voters.push(element);
         }
         return voters;
     } catch (error) {
