@@ -25,6 +25,9 @@ app.use(function (request, response, next) {
 app.get('/', function (req, res) {
     res.sendFile(__dirname + "/static/index.html");
 });
+app.get('/admin', function (req, res) {
+    res.sendFile(__dirname + "/static/admin.html");
+});
 app.get('/clear', async function (req, res) {
     try {
         await fs.writeFile('votes.csv', "");
@@ -39,7 +42,10 @@ app.get('/voters', async function (req, res) {
     res.status(200);
     res.send(JSON.stringify(await getVoters()));
 });
-app.post('/voters', async function (req, res) {
+app.get('/voters/plain', async function (req, res) {
+    res.sendFile('voters.txt');
+});
+app.post('/voters/plain', async function (req, res) {
     await fs.writeFile('voters.txt', req.body.toString());
     res.sendStatus(200);
 });
@@ -50,6 +56,13 @@ app.get('/permissions', async function (req, res) {
 app.get('/categories', async function (req, res) {
     res.status(200);
     res.send(JSON.stringify(await getCategories()));
+});
+app.get('/categories/plain', async function (req, res) {
+    res.sendFile('categories.txt');
+});
+app.post('/categories/plain', async function (req, res) {
+    await fs.writeFile('categories.txt', req.body.toString());
+    res.sendStatus(200);
 });
 
 async function getVoters() {
@@ -109,9 +122,9 @@ async function getCategories() {
     }
 }
 
-app.post('/send_vote', async function (req, res) {
+app.post('/send_vote', async function (request, res) {
     function sendError(text) {
-        res.status(400);
+        res.status(422);
         res.send(text);
     }
 
@@ -122,11 +135,10 @@ app.post('/send_vote', async function (req, res) {
         sendError("Внутрянняя ошибка");
         return;
     }
-    var obj = req.body;
-    var member = obj.member;
-    var ev3 = +obj.ev3;
-    var wedo = +obj.wedo;
-    var third = +obj.third;
+    var member = request.body.member;
+    var ev3 = +request.body.ev3;
+    var wedo = +request.body.wedo;
+    var third = +request.body.third;
 
     var member1 = +member.split('-', 1)[0];
     

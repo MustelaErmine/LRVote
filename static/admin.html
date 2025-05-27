@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Кубок ЛР - 2024</title>
+	<script src="/static/requests.js"></script>
+	<script type="text/javascript">
+		function displayError(text) {
+			alert(text);
+		}
+		function displaySuccess(text) {
+			alert(text);
+		}
+		async function displayCurrent() {
+			const voters = await getText("/voters/plain");
+			const categories = await getText("/categories/plain");
+
+            document.getElementById('voters_conf').innerText = voters;
+            document.getElementById('categories_conf').innerText = categories;
+		}
+
+		async function sendVoters() {
+			
+		}
+		async function sendCategories() {
+			
+		}
+	</script>
+</head>
+
+<body>
+	<center>
+		<div id="form">
+            <p>Админ-панель</p>
+
+			<div class="input_row">
+				<label>Конфигурация голосовальщиков:</label>
+                <br>
+                <textarea id="voters_conf"></textarea>
+			</div><br>
+			<center><button onclick="sendVoters()">Отправить</button></center><br>
+			<div class="input_row">
+				<label>Конфигурация категорий:</label>
+                <br>
+                <textarea id="categories_conf"></textarea>
+			</div><br>
+			<center><button onclick="sendCategories()">Отправить</button></center><br>
+		</div>
+		<style>
+			.input_row {
+				margin-bottom: 10px;
+			}
+
+			input {
+				width: 5em;
+				font-size: 16pt;
+				border-radius: 10px;
+				text-align: center;
+				border-width: 2px;
+				border-color: #555;
+			}
+
+			.input_row {
+				max-width: 90%;
+			}
+
+			label {
+				font-family: Consolas;
+				font-size: 16pt;
+			}
+
+			#form {
+				background-color: white;
+				width: 90%;
+				border-radius: 40px;
+				border-style: solid;
+				border-width: 5px;
+				border-color: #333;
+			}
+
+			html {
+				background-color: #2fabe1;
+			}
+
+			button {
+				font-size: 20pt;
+				font-family: cursive;
+				padding-left: 20px;
+				padding-right: 20px;
+				padding-top: 5px;
+				padding-bottom: 5px;
+
+				border-radius: 20px;
+				border-color: #a5c313;
+				background-color: white;
+				border-width: 5px;
+				border-style: solid;
+			}
+		</style>
+	</center>
+</body>
+
+<script type="text/javascript">
+    displayCurrent();
+</script>
+</html>
