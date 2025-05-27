@@ -58,7 +58,7 @@
 			else if (third == ev3 || third == wedo) {
 				displayError("Вы не можете голосовать дважды за одну команду!");
 			}
-			else if (perm[member1 - 1].indexOf(ev3) + perm[member1 - 1].indexOf(third) + perm[member1 - 1].indexOf(wedo) != -3) {
+			else if (perm[member].indexOf(ev3) + perm[member].indexOf(third) + perm[member].indexOf(wedo) != -3) {
 				displayError("Вам запрещено голосовать за эту команду!");
 			}
 			else {

@@ -86,14 +86,16 @@ async function getVoters() {
 async function getPermissions() {
     try {
         const rows = (await fs.readFile('voters.txt')).toString().split('\n');
-        var perms = [];
+        var perms = {};
         for (let i = 0; i < rows.length; i++) {
-            var element = rows[i].replace(' ', '');
-            if (element.indexOf(':') == -1)
-                perms.push([]);
+            var element = rows[i].replace(' ', '').trim();
+            if (element.indexOf(':') == -1) {
+                perms[element] = [];
+            }
             else {
-                element = element.split(':')[1];
-                perms.push(element.split(',').map((elem) => +elem));
+                const name = element.split(':')[0];
+                const p = element.split(':')[1];
+                perms[name] = p.split(',').map((elem) => +elem);
             }
         }
         return perms;
@@ -166,7 +168,7 @@ app.post('/send_vote', async function (request, res) {
     else if (third == ev3 || third == wedo) {
         sendError("Вы не можете голосовать дважды за одну команду!");
     }
-    else if (permissions[member1].indexOf(ev3) + permissions[member1].indexOf(third) + permissions[member1].indexOf(wedo) != -3) {
+    else if (permissions[member].indexOf(ev3) + permissions[member].indexOf(third) + permissions[member].indexOf(wedo) != -3) {
         sendError("Вам запрещено голосовать за эту команду!");
     }
     else {
