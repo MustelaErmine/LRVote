@@ -91,10 +91,11 @@ async function getPermissions() {
 }
 async function getCategories() {
     try {
-        const rows = (await fs.readFile('voters.txt')).toString().split('\n');
+        const rows = (await fs.readFile('categories.txt')).toString().split('\n');
         var categories = {};
         for (let i = 0; i < rows.length; i++) {
             var element = rows[i].replace(' ', '');
+            if (element.)
             
             const name = element.split(':')[0];
             var tuple = element.split(':')[1].split('-').map(x => +x);
