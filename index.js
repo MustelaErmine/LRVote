@@ -118,7 +118,7 @@ app.post('/send_vote', async function (req, res) {
     const voters = await getVoters();
     const permissions = await getPermissions();
     const cats = await getCategories();
-    if (voters == null || permissions == null || categories == null) {
+    if (voters == null || permissions == null || cats == null) {
         sendError("Внутрянняя ошибка");
         return;
     }
