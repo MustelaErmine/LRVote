@@ -47,6 +47,10 @@ app.get('/permissions', async function (req, res) {
     res.status(200);
     res.send(JSON.stringify(await getPermissions()));
 });
+app.get('/categories', async function (req, res) {
+    res.status(200);
+    res.send(JSON.stringify(await getCategories()));
+});
 
 async function getVoters() {
     try {
@@ -85,6 +89,23 @@ async function getPermissions() {
         return null;
     }
 }
+async function getCategories() {
+    try {
+        const rows = (await fs.readFile('voters.txt')).toString().split('\n');
+        var categories = {};
+        for (let i = 0; i < rows.length; i++) {
+            var element = rows[i].replace(' ', '');
+            
+            const name = element.split(':')[0];
+            var tuple = element.split(':')[1].split('-').map(x => +x);
+            categories[name] = {start: tuple[0], end: tuple[1]};
+        }
+        return categories;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
 
 app.post('/send_vote', async function (req, res) {
     function sendError(text) {
@@ -94,7 +115,8 @@ app.post('/send_vote', async function (req, res) {
 
     const voters = await getVoters();
     const permissions = await getPermissions();
-    if (voters == null || permissions == null) {
+    const cats = await getCategories();
+    if (voters == null || permissions == null || categories == null) {
         sendError("Внутрянняя ошибка");
         return;
     }
@@ -105,18 +127,20 @@ app.post('/send_vote', async function (req, res) {
     var third = +obj.third;
 
     var member1 = +member.split('-', 1)[0];
+    
 
     if (isNaN(ev3) || isNaN(wedo) || isNaN(third) ||
         member == '' || ev3 == '' || wedo == '' || third == '') {
         sendError("Неверный формат ввода");
     }
-    else if (ev3 > 30 || ev3 < 20) {
+    else if (ev3 > cats.ev3.end || ev3 < cats.ev3.start) {
         sendError("Команда 1 не из категории EV3!");
     }
-    else if (wedo > 19 || wedo < 1) {
+    else if (wedo > cats.wedo.end || wedo < cats.wedo.start) {
         sendError("Команда 2 не из категории WeDo!");
     }
-    else if (third > 30 || third < 1) {
+    else if ((third > cats.ev3.end || third < cats.ev3.start) &&
+             (third > cats.wedo.end || third < cats.wedo.start)) {
         sendError("Команда 3 не принадлежит ни одной из категорий!");
     }
     else if (voters.indexOf(member) == -1) {

@@ -32,19 +32,21 @@
 			var third = +document.getElementById('third').value;
 			const voters = await getJson("/voters");
 			const perm = await getJson("/permissions");
+			const cats = await getJson('/categories');
 
 			var member1 = +member.split('-', 1)[0];
 			if (isNaN(ev3) || isNaN(wedo) || isNaN(third) ||
 				member == '' || ev3 == '' || wedo == '' || third == '') {
 				displayError("Неверный формат ввода");
 			}
-			else if (ev3 > 30 || ev3 < 20) {
+			else if (ev3 > cats.ev3.end || ev3 < cats.ev3.start) {
 				displayError("Команда 1 не из категории EV3!");
 			}
-			else if (wedo > 19 || wedo < 1) {
+			else if (wedo > cats.wedo.end || wedo < cats.wedo.start) {
 				displayError("Команда 2 не из категории WeDo!");
 			}
-			else if (third > 30 || third < 1) {
+			else if ((third > cats.ev3.end || third < cats.ev3.start) &&
+             		 (third > cats.wedo.end || third < cats.wedo.start)) {
 				displayError("Команда 3 не принадлежит ни одной из категорий!");
 			}
 			else if (voters.indexOf(member) == -1) {
