@@ -22,10 +22,28 @@
 		}
 
 		async function sendVoters() {
-			
+			const voters_conf = document.getElementById('voters_conf').value;
+
+            var response = await postText('/voters/plain', voters_conf);
+
+            if (response.status == 200) {
+                displaySuccess('Успешно')
+                await displayCurrent();
+            } else {
+                displayError('Ошибка')
+            }
 		}
 		async function sendCategories() {
-			
+			const categories_conf = document.getElementById('categories_conf').value;
+
+            var response = await postText('/categories/plain', categories_conf);
+
+            if (response.status == 200) {
+                displaySuccess('Успешно')
+                await displayCurrent();
+            } else {
+                displayError('Ошибка')
+            }
 		}
 	</script>
 </head>
@@ -33,7 +51,7 @@
 <body>
 	<center>
 		<div id="form">
-            <p>Админ-панель</p>
+            <h2>Админ-панель</h2>
 
 			<div class="input_row">
 				<label>Конфигурация голосовальщиков:</label>
