@@ -43,7 +43,7 @@ app.get('/voters', async function (req, res) {
     res.send(JSON.stringify(await getVoters()));
 });
 app.get('/voters/plain', async function (req, res) {
-    res.sendFile('voters.txt');
+    res.sendFile(__dirname + '/voters.txt');
 });
 app.post('/voters/plain', async function (req, res) {
     await fs.writeFile('voters.txt', req.body.toString());
@@ -58,7 +58,7 @@ app.get('/categories', async function (req, res) {
     res.send(JSON.stringify(await getCategories()));
 });
 app.get('/categories/plain', async function (req, res) {
-    res.sendFile('categories.txt');
+    res.sendFile(__dirname + '/categories.txt');
 });
 app.post('/categories/plain', async function (req, res) {
     await fs.writeFile('categories.txt', req.body.toString());
