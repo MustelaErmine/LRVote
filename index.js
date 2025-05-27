@@ -89,6 +89,9 @@ async function getPermissions() {
         var perms = {};
         for (let i = 0; i < rows.length; i++) {
             var element = rows[i].replace(' ', '').trim();
+            if (element.length == 0){
+                continue;
+            }
             if (element.indexOf(':') == -1) {
                 perms[element] = [];
             }
