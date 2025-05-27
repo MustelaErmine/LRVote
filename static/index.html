@@ -5,6 +5,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Кубок ЛР - 2024</title>
+	<script src="/static/requests.js"></script>
 	<script type="text/javascript">
 		function displayError(text) {
 			/*document.getElementById('error_label').innerText = text;
@@ -29,65 +30,8 @@
 			var ev3 = +document.getElementById('ev3').value;
 			var wedo = +document.getElementById('wedo').value;
 			var third = +document.getElementById('third').value;
-			const voters = ['1-1', '1-2', '2-1', '2-2', '3-1', '4-1', '4-2', '5-1', '6-1', '6-2', '6-3',
-				'7-1', '7-2', '8-1', '8-2', '9-2', '10-1', '10-2', '11-1', '12-1', '12-2', '13-1', '13-2',
-				'14-1', '15-1', '15-2', '16-1', '17-1', '18-1', '19-1', '20-1', '21-1', '21-2', '22-1', '22-2',
-				'23-1', '23-2', '24-1', '24-2', '25-1', '25-2', '26-1', '26-2', '27-1', '27-2', '28-1', '28-2',
-				'29-1', '29-2', '30-1', '30-2', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45'];
-			const perm = [
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[15],
-				[6, 14],
-				[16],
-				[7, 1],
-				[1, 2, 21],
-				[12, 25, 28],
-				[8, 9, 23],
-				[13],
-				[11, 17, 18, 19],
-				[3, 4, 5, 22, 27],
-				[20, 24, 26, 30],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-				[],
-			];
+			const voters = await getJson("/voters");
+			const perm = await getJson("/permissions");
 
 			var member1 = +member.split('-', 1)[0];
 			if (isNaN(ev3) || isNaN(wedo) || isNaN(third) ||
@@ -116,13 +60,10 @@
 				displayError("Вам запрещено голосовать за эту команду!");
 			}
 			else {
-				var response = await fetch("http://ermine-scout.ru:2000/send_vote", {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json;charset=utf-8',
-					},
-					body: JSON.stringify({ ev3: ev3, member: member, third: third, wedo: wedo })
-				});
+				var response = await postJson(
+					"/send_vote",
+					{ ev3: ev3, member: member, third: third, wedo: wedo }
+				);
 				if (response.status == 200) {
 					clearAllFormInputs();
 					displaySuccess("Голос успешно отправлен");
