@@ -95,7 +95,8 @@ async function getCategories() {
         var categories = {};
         for (let i = 0; i < rows.length; i++) {
             var element = rows[i].replace(' ', '');
-            if (element.)
+            if (element.trim().length == 0)
+                continue
             
             const name = element.split(':')[0];
             var tuple = element.split(':')[1].split('-').map(x => +x);
