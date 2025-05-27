@@ -25,7 +25,7 @@ app.use(function (request, response, next) {
 app.get('/', function (req, res) {
     res.sendFile(__dirname + "/static/index.html");
 });
-app.get('/admin', function (req, res) {
+app.get('/pincpanther', function (req, res) {
     res.sendFile(__dirname + "/static/admin.html");
 });
 app.get('/clear', async function (req, res) {

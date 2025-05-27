@@ -17,8 +17,8 @@
 			const voters = await getText("/voters/plain");
 			const categories = await getText("/categories/plain");
 
-            document.getElementById('voters_conf').innerText = voters;
-            document.getElementById('categories_conf').innerText = categories;
+            document.getElementById('voters_conf').value = voters;
+            document.getElementById('categories_conf').value = categories;
 		}
 
 		async function sendVoters() {
