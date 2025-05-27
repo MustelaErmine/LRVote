@@ -54,7 +54,7 @@ async function getVoters() {
         var voters = [];
         for (let i = 0; i < rows.length; i++) {
             var element = rows[i].trim();
-            if (element.length() == 0)
+            if (element.length == 0)
                 continue;
             if (element.indexOf(':') != -1)
                 element = element.split(':')[0];
